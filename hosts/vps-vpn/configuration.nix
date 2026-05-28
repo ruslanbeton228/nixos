@@ -27,6 +27,7 @@
       htop
       neovim
       wget
+      xraymgr
     ];
   };
   networking = {
