@@ -8,8 +8,8 @@
   inputs = {
     # Default:
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager";
+    xraymgr = {
+      url = "github:MOIS3Y/xraymgr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -19,21 +19,13 @@
       system = "x86_64-linux";
       lib = nixpkgs.lib;
       pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-      specialArgs = { inherit system; inherit inputs; };
-      extraSpecialArgs = { inherit system; inherit inputs; };
+      specialArgs = { inherit system inputs; };
     in {
     nixosConfigurations = {
       vps-vpn = lib.nixosSystem {
         inherit specialArgs;
         modules = [
           ./hosts/vps-vpn/configuration.nix
-          home-manager.nixosModules.home-manager {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.roman = import ./homes/roman_vpn/home.nix;
-            };
-          }
         ];
       };
       # ... add more hosts here:
