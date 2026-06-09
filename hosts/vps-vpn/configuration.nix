@@ -20,27 +20,47 @@
       pkgs.zsh
     ];
     systemPackages = with pkgs; [
+      bat
+      bottom
       curl
       dnsutils
       docker-compose
+      duf
+      nitch
       git
       htop
+      ipset
+      jq
       neovim
+      ncdu
+      nitch
+      rsync
+      tree
+      unzip
       wget
-      xraymgr
     ];
   };
+  
   networking = {
-    hostName = "vps-vpn";
-    interfaces = {
-      ens3.ipv4.addresses = [
+    hostName = "vpn-1vds";
+    useDHCP = false;
+    interfaces.ens3 = {
+      useDHCP = false;
+      # Spoof/Hardcode the MAC address required by the hosting provider
+      macAddress = "52:54:00:73:1F:1B";
+      ipv4.addresses = [
         {
-          address = "89.110.66.188";
-          prefixLength = 24;
+          address = "85.137.89.216";
+          prefixLength = 32;
         }
       ];
     };
-    defaultGateway = "89.110.66.1";
+    # Explicitly specify the interface for the gateway
+    # since it's outside the /32 subnet
+    defaultGateway = {
+      address = "10.0.0.1";
+      interface = "ens3";
+    };
     nameservers = [
       "8.8.8.8"
       "1.1.1.1"
@@ -62,22 +82,18 @@
     };
   };
 
+
   nix = {
     package = pkgs.nix;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
     settings = {
-      trusted-users = [ "papa" ];
+      trusted-users = [ "@wheel" ];
     };
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = [
-    (final: prev:{
-      xraymgr = inputs.xraymgr.packages."${pkgs.stdenv.hostPlatform.system}".default;  
-    })
-  ];
 
   programs = {
     nh = {
@@ -143,5 +159,5 @@
 
   time.timeZone = "Europe/Amsterdam";
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

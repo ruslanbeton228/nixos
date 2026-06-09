@@ -8,10 +8,6 @@
   inputs = {
     # Default:
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    xraymgr = {
-      url = "github:MOIS3Y/xraymgr";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
   
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
