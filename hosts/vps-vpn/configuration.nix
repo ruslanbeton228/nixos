@@ -133,8 +133,8 @@
         PasswordAuthentication = false;
         LogLevel = "VERBOSE";
       };
-
     };
+    qemuGuest.enable = true;
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
