@@ -10,7 +10,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
   
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
       lib = nixpkgs.lib;
@@ -22,6 +22,12 @@
         inherit specialArgs;
         modules = [
           ./hosts/vps-vpn/configuration.nix
+        ];
+      };
+      laptop = lib.nixosSystem {
+        inherit specialArgs;
+        modules = [
+          ./hosts/laptop/configuration.nix
         ];
       };
       # ... add more hosts here:
