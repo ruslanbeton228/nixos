@@ -1,0 +1,14 @@
+version: 2
+
+updates:
+  # Update the actions used by CI workflows.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
+  # Update flake inputs and regenerate flake.lock.
+  - package-ecosystem: "nix"
+    directory: "/"
+    schedule:
+      interval: "monthly"

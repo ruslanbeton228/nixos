@@ -1,0 +1,43 @@
+name: "CI"
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "**.png"
+      - "**.jpg"
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "**.png"
+      - "**.jpg"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: "Check Nix flake"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v7
+
+      - name: "Install Nix"
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: "Enable Nix cache"
+        uses: DeterminateSystems/magic-nix-cache-action@v14
+
+      - name: "Check flake evaluation"
+        run: nix flake check --no-build --accept-flake-config
+
+      - name: "Build preparation scripts"
+        run: nix build .#setup-disk .#setup-network --no-link
