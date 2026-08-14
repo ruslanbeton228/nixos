@@ -1,18 +1,24 @@
 # NixOS configuration for the VPS-VPN (Netherlands).
 
-{ inputs, pkgs, ... }:
+{ pkgs, ... }:
 {
   imports = [
-    # Host autogenerate hardware configuration:
-    ./hardware-configuration.nix # virtual
+    ./hardware-configuration.nix
   ];
+
+  # --- BOOT ---
 
   boot.loader.grub = {
     device = "/dev/vda";
     configurationLimit = 7;
   };
 
+  # --- LOCALIZATION ---
+
   i18n.defaultLocale = "en_US.UTF-8";
+  time.timeZone = "Europe/Amsterdam";
+
+  # --- PACKAGES ---
 
   environment = {
     shells = [
@@ -20,47 +26,40 @@
       pkgs.zsh
     ];
     systemPackages = with pkgs; [
-      bat
-      bottom
+      # Command-line utilities.
+      htop
+      jq
+      ncdu
+      tree
+
+      # Development tools.
+      git
+      neovim
+
+      # Networking.
       curl
       dnsutils
+
+      # System administration.
       docker-compose
-      duf
-      nitch
-      git
-      htop
-      ipset
-      jq
-      neovim
-      ncdu
-      nitch
-      rsync
-      tree
-      unzip
-      wget
     ];
   };
-  
+
+  # --- NETWORKING ---
+
   networking = {
-    hostName = "vpn-1vds";
+    hostName = "vps-vpn";
     useDHCP = false;
     interfaces.ens3 = {
       useDHCP = false;
-      # Spoof/Hardcode the MAC address required by the hosting provider
-      macAddress = "52:54:00:73:1F:1B";
       ipv4.addresses = [
         {
-          address = "85.137.89.216";
-          prefixLength = 32;
+          address = "89.110.66.188";
+          prefixLength = 24;
         }
       ];
     };
-    # Explicitly specify the interface for the gateway
-    # since it's outside the /32 subnet
-    defaultGateway = {
-      address = "10.0.0.1";
-      interface = "ens3";
-    };
+    defaultGateway = "89.110.66.1";
     nameservers = [
       "8.8.8.8"
       "1.1.1.1"
@@ -71,7 +70,7 @@
         53
         80
         443
-        1500      
+        1500
       ];
       allowedUDPPorts = [
         53
@@ -82,6 +81,7 @@
     };
   };
 
+  # --- NIX ---
 
   nix = {
     package = pkgs.nix;
@@ -94,6 +94,8 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+
+  # --- PROGRAMS ---
 
   programs = {
     nh = {
@@ -110,6 +112,8 @@
       syntaxHighlighting.enable = true;
     };
   };
+
+  # --- SERVICES ---
 
   services = {
     fail2ban = {
@@ -137,7 +141,8 @@
     qemuGuest.enable = true;
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # --- USERS ---
+
   users = {
     users = {
       papa = {
@@ -149,15 +154,17 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOiDsyUqqD+4HLTULbd5Es3F6a07fiSu8mE2C3ErcCHe rootVPN"
         ];
       };
-      # ... add more users here
     };
   };
+
+  # --- VIRTUALIZATION ---
 
   virtualisation = {
     docker.enable = true;
   };
 
-  time.timeZone = "Europe/Amsterdam";
+  # --- SYSTEM ---
 
+  # Keep this value at the release used for the initial installation.
   system.stateVersion = "26.05";
 }
