@@ -151,6 +151,7 @@
       wget
 
       # Development tools.
+      claude-code
       docker-compose
       git
       neovim
@@ -190,6 +191,18 @@
       usb-modeswitch
       usbutils
     ];
+  };
+
+  # --- SERVICES ---
+
+  services.xray = {
+    enable = true;
+    settingsFile = "/etc/xray/config.json";
+  };
+
+  # Skip startup until the imperative configuration has been created.
+  systemd.services.xray.unitConfig = {
+    ConditionPathExists = "/etc/xray/config.json";
   };
 
   # --- SSH ---

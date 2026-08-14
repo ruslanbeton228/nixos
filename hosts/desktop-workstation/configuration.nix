@@ -73,15 +73,17 @@
 
   # --- USERS ---
 
-  users.users.roman = {
-    isNormalUser = true;
-    description = "Roman";
-    extraGroups = [
-      "docker"
-      "networkmanager"
-      "wheel"
-    ];
-    shell = pkgs.zsh;
+  users.users = {
+    roman = {
+      isNormalUser = true;
+      description = "Roman";
+      extraGroups = [
+        "docker"
+        "networkmanager"
+        "wheel"
+      ];
+      shell = pkgs.zsh;
+    };
   };
 
   # --- PROGRAMS ---
@@ -129,6 +131,7 @@
       wget
 
       # Development tools.
+      claude-code
       docker-compose
       git
       neovim
@@ -167,6 +170,30 @@
       pciutils
       usbutils
     ];
+  };
+
+  # --- SERVICES ---
+
+  services.xray = {
+    enable = true;
+    settingsFile = "/etc/xray/config.json";
+  };
+
+  # Skip startup until the imperative configuration has been created.
+  systemd.services.xray.unitConfig = {
+    ConditionPathExists = "/etc/xray/config.json";
+  };
+
+  # --- SSH ---
+
+  services.openssh = {
+    enable = true;
+    startWhenNeeded = true;
+    allowSFTP = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = true;
+    };
   };
 
   # --- VIRTUALIZATION ---

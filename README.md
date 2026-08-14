@@ -263,6 +263,24 @@ reboot
 Remove the installation media when the firmware starts the computer
 again.
 
+## Configuring Xray
+
+Both desktop hosts expect the imperative Xray configuration at
+`/etc/xray/config.json`. The service is skipped without an error while the
+file is missing.
+
+From a root shell, create the directory and install the configuration:
+
+```console
+install -d -m 0700 /etc/xray
+install -m 0600 /path/to/config.json /etc/xray/config.json
+systemctl start xray
+systemctl status xray
+```
+
+Xray will start automatically on subsequent boots while the configuration
+file exists.
+
 ## Updating a desktop
 
 The `nh` command uses `/home/roman/.setup` automatically on both desktop
