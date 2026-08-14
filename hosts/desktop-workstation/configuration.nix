@@ -148,6 +148,7 @@
 
       # Desktop applications.
       firefox
+      gradia
       google-chrome
       keepassxc
       mattermost-desktop
