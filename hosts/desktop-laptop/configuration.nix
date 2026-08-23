@@ -113,6 +113,7 @@
       enable = true;
       flake = "/home/roman/.setup";
     };
+    nix-ld.enable = true;
     zsh = {
       enable = true;
       autosuggestions.enable = true;
