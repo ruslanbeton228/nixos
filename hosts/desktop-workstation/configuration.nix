@@ -1,6 +1,6 @@
 # NixOS configuration for the desktop workstation.
 
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -136,7 +136,7 @@
       claude-code
       docker-compose
       git
-      neovim
+      nvchad
       opencode
       python3
       uv
@@ -218,7 +218,15 @@
     };
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays = [
+      (final: prev: {
+        nvchad = inputs.nix4nvchad.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      })
+    ];
+  };
+  
 
   # --- SYSTEM ---
 

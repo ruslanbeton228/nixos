@@ -3,6 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nix4nvchad = {
+      url = "github:nix-community/nix4nvchad";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -10,7 +14,7 @@
       self,
       nixpkgs,
       ...
-    }:
+    }@inputs:
     let
       # --- COMMON VALUES ---
 
@@ -52,11 +56,17 @@
 
       nixosConfigurations = {
         laptop = nixosSystem {
+          specialArgs = {
+            inherit inputs;
+          };
           modules = [
             ./hosts/desktop-laptop/configuration.nix
           ];
         };
         workstation = nixosSystem {
+          specialArgs = {
+            inherit inputs;
+          };
           modules = [
             ./hosts/desktop-workstation/configuration.nix
           ];
