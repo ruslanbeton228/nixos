@@ -25,7 +25,7 @@ in
         "usb_storage"
         "sd_mod"
       ];
-      kernelModules = [ "dm-snapshot" "amd-gpu" ];
+      kernelModules = [ "dm-snapshot" "amdgpu" ];
     };
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
