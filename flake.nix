@@ -7,6 +7,9 @@
       url = "github:nix-community/nix4nvchad";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    distro-grub-themes = {
+      url = "github:AdisonCavani/distro-grub-themes";
+    };
   };
 
   outputs =

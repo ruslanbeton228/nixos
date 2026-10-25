@@ -20,12 +20,14 @@ in
       availableKernelModules = [
         "xhci_pci"
         "ahci"
+        "nvme"
         "usbhid"
+        "usb_storage"
         "sd_mod"
       ];
-      kernelModules = [ "dm-snapshot" ];
+      kernelModules = [ "dm-snapshot" "amd-gpu" ];
     };
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
   };
 
@@ -72,7 +74,7 @@ in
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  hardware.cpu.intel = {
+  hardware.cpu.amd = {
     updateMicrocode = lib.mkDefault redistributableFirmware;
   };
 }

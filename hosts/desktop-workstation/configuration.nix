@@ -1,6 +1,10 @@
 # NixOS configuration for the desktop workstation.
 
 { pkgs, inputs, ... }:
+let
+  # Grub theme
+  theme = inputs.distro-grub-themes.packages.${pkgs.stdenv.hostPlatform.system}."msi-grub-theme";
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -8,17 +12,42 @@
 
   # --- BOOT ---
 
-  boot.loader = {
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot/efi";
+  boot = {
+    initrd.verbose = false;
+    consoleLogLevel = 0;
+    kernelParams = [
+      "quiet"
+      "udev.log_level=3"
+    ];
+    loader = {
+      efi = {
+        canTouchEfiVariables = false;
+        efiSysMountPoint = "/boot/efi";
+      };
+      grub = {
+        enable = true;
+        configurationLimit = 7;
+        devices = [ "nodev" ];
+        efiInstallAsRemovable = true;
+        efiSupport = true;
+        useOSProber = true;
+        gfxmodeEfi = "1920x1080";
+        splashImage = "${theme}/splash_image.jpg";
+        inherit theme;
+      };
     };
-    grub = {
+  };
+
+  # --- HARDWARE ---
+
+  hardware = {
+    bluetooth = {
       enable = true;
-      configurationLimit = 7;
-      devices = [ "nodev" ];
-      efiSupport = true;
-      useOSProber = true;
+      powerOnBoot = true; 
+    };  
+    graphics = {
+      enable = true;
+      enable32Bit = true;
     };
   };
 
@@ -107,6 +136,21 @@
         customPkgs = [ pkgs.nix-zsh-completions ];
       };
     };
+    gamescope = {
+      enable = true;
+      # ! broken: steam: setuid use of bubblewrap is not supported in this build
+      # ? see: https://github.com/NixOS/nixpkgs/issues/523200
+      capSysNice = false;
+    };
+    steam = {
+      enable = true;
+      extest = {
+        enable = true;
+      };
+      gamescopeSession = {
+        enable = true;
+      };
+    };
   };
 
   # --- PACKAGES ---
@@ -149,11 +193,14 @@
       wireguard-tools
 
       # Desktop applications.
+      bottles
       firefox
       gradia
       google-chrome
       keepassxc
+      kooha
       mattermost-desktop
+      protonup-qt
       telegram-desktop
       tilix
       vault
@@ -167,6 +214,7 @@
       volantes-cursors
 
       # Hardware and storage.
+      lact
       lm_sensors
       lshw
       ntfs3g
@@ -176,6 +224,10 @@
   };
 
   # --- SERVICES ---
+
+  services.fstrim.enable = true;
+
+  services.lact.enable = true;
 
   services.xray = {
     enable = true;
