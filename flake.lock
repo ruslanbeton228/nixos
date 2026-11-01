@@ -45,11 +45,11 @@
         "nvchad-starter": "nvchad-starter"
       },
       "locked": {
-        "lastModified": 1790046371,
-        "narHash": "sha256-j1q/Bx89d5PM7CRBqdV1RDvmTwwfAqIBEthXg39pUWE=",
+        "lastModified": 1793082508,
+        "narHash": "sha256-joN4R39MOZ4Bau8mWsuFT6lEeHLOHqFv+SgdKoNCw5Y=",
         "owner": "nix-community",
         "repo": "nix4nvchad",
-        "rev": "706a5c7d9fb40395c9c4805a0316ab32622beb36",
+        "rev": "b0b0daf5663d494b0e3fd1d1486c68e7aedbf2f1",
         "type": "github"
       },
       "original": {
