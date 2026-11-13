@@ -3,9 +3,14 @@
 {
   config,
   pkgs,
+  lib,
+  inputs,
   ...
 }:
-
+let
+  # Grub theme
+  theme = inputs.distro-grub-themes.packages.${pkgs.stdenv.hostPlatform.system}."asus-grub-theme";
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -30,7 +35,14 @@
         efiSupport = true;
         gfxmodeEfi = "1920x1080";
         useOSProber = true;
+        splashImage = "${theme}/splash_image.jpg";
+        inherit theme;
       };
+    };
+    plymouth = {
+      enable = true;
+      themePackages = [ pkgs.adi1090x-plymouth-themes ];
+      theme = "connect";
     };
   };
 
@@ -156,10 +168,10 @@
       docker-compose
       git
       neovim
-      opencode
       python3
       uv
       vscode
+      zed-editor
 
       # Networking.
       dnsutils

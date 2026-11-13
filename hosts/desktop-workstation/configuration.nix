@@ -1,6 +1,12 @@
 # NixOS configuration for the desktop workstation.
 
-{ pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 let
   # Grub theme
   theme = inputs.distro-grub-themes.packages.${pkgs.stdenv.hostPlatform.system}."msi-grub-theme";
@@ -13,7 +19,6 @@ in
   # --- BOOT ---
 
   boot = {
-    initrd.verbose = false;
     consoleLogLevel = 0;
     kernelParams = [
       "quiet"
@@ -36,6 +41,11 @@ in
         inherit theme;
       };
     };
+    plymouth = {
+      enable = true;
+      themePackages = [ pkgs.adi1090x-plymouth-themes ];
+      theme = "connect";
+    };
   };
 
   # --- HARDWARE ---
@@ -43,8 +53,8 @@ in
   hardware = {
     bluetooth = {
       enable = true;
-      powerOnBoot = true; 
-    };  
+      powerOnBoot = true;
+    };
     graphics = {
       enable = true;
       enable32Bit = true;
@@ -185,6 +195,7 @@ in
       python3
       uv
       vscode
+      zed-editor
 
       # Networking.
       dnsutils
@@ -276,9 +287,17 @@ in
       (final: prev: {
         nvchad = inputs.nix4nvchad.packages.${pkgs.stdenv.hostPlatform.system}.default;
       })
+      (final: prev: {
+        # Temporary: https://github.com/NixOS/nixpkgs/issues/583530
+        # Fixed by https://github.com/NixOS/nixpkgs/pull/582675; remove after a nixpkgs bump.
+        opencode = prev.opencode.overrideAttrs (old: {
+          node_modules = old.node_modules.overrideAttrs (_: {
+            outputHash = "sha256-prx9dX7kUvs/E3zopkaPk5LXh3xJAy5sZeum/W8L7cA=";
+          });
+        });
+      })
     ];
   };
-  
 
   # --- SYSTEM ---
 
